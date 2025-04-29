@@ -4,8 +4,8 @@ def coincidence(source_list = None, rng = range(0, 0)):
         for item in source_list:
             if item is None: continue
             if type(item) == int and item in rng: result.append(item)
-            if type(item) == float and round(item) in rng: result.append(item)
-            if type(item) == list: result.extend(coincidence(item, rng))
+            elif type(item) == float and round(item) in rng: result.append(item)
+            elif type(item) == list: result.extend(coincidence(item, rng))
     return result
 
 assert (coincidence([1, 2, 3, 4, 5], range(3, 6)) == [3, 4, 5])
