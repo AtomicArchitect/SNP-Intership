@@ -1,4 +1,4 @@
-class EvenNumber:
+class EvenNumbers:
     def __init__(self, number = None):
         self.__number = number
 
@@ -11,6 +11,6 @@ class EvenNumber:
         self.__current_step += 1
         return 2 * (self.__current_step - 1)
 
-evens = EvenNumber(5)
+evens = EvenNumbers(5)
 for num in evens:
     print(num)
