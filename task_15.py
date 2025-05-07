@@ -1,19 +1,5 @@
 import re
 
-def string_swap_symbols(source, from_idx, to_idx):
-    if from_idx == to_idx: return source
-    source = list(source)
-    source[from_idx], source[to_idx] = source[to_idx], source[from_idx]
-    return "".join(source)
-
-class ValueError(Exception):
-    def __init__(self, message = None):
-        if message is None: self.message = "Wrong data type"
-        else: self.message = message
-
-    def __str__(self):
-        return self.message
-
 class BlockTranspositionCipher:
     @staticmethod
     def check_key(key):
@@ -31,21 +17,12 @@ class BlockTranspositionCipher:
         self.__decrypt = decrypt
         self.__blocks = [text[i:i + len(key)] for i in range(0, len(text), len(key))]
         key_numbers = [ord(char) - 97 for char in key]
+        key_numbers_sorted = sorted(key_numbers)
         if self.__decrypt:
-            key_numbers_sorted = sorted(key_numbers)
-            for idx, chunk in enumerate(self.__blocks):
-                chunk_dict = dict(zip(key_numbers_sorted, chunk))
-                self.__blocks[idx] = ''.join(chunk_dict[num] for num in key_numbers)
-        else:
-            for left in range(len(key_numbers)):
-                min_idx = left
-                for right in range(left + 1, len(key_numbers)):
-                    if key_numbers[right] < key_numbers[min_idx]:
-                        min_idx = right
-                if min_idx != left:
-                    for idx, chunk in enumerate(self.__blocks):
-                        self.__blocks[idx] = string_swap_symbols(chunk, left, min_idx)
-                    key_numbers[left], key_numbers[min_idx] = key_numbers[min_idx], key_numbers[left]
+            key_numbers_sorted, key_numbers = key_numbers, key_numbers_sorted
+        for idx, chunk in enumerate(self.__blocks):
+            chunk_dict = dict(zip(key_numbers_sorted, chunk))
+            self.__blocks[idx] = ''.join(chunk_dict[num] for num in key_numbers)
 
     def get_result(self):
         result = ''.join(self.__blocks)
@@ -61,8 +38,8 @@ class BlockTranspositionCipher:
         self.__current_pointer += 1
         return self.__blocks[self.__current_pointer - 1]
 
-main_key = "hguselczabv"
-text_to_encrypt = "Была глубокая ночь, за окном шумел непрекращающийся дождь, а рядом со мной гудела моя персональная ЭВМ"
+main_key = "cab"
+text_to_encrypt = "PYTHON"
 cipher = BlockTranspositionCipher(text_to_encrypt, main_key)
 print("Ключ: '{}', Исходная строка: '{}'".format(main_key, text_to_encrypt))
 print("\nПроцесс шифрования по блокам:")
