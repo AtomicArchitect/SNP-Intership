@@ -5,26 +5,26 @@ class Dessert:
         return True
 
     def __init__(self, name = None, calories = 0):
-        self.__name = name
-        self.__calories = calories
+        self.name = name
+        self.calories = calories
 
     def is_healthy(self):
-        return True if (type(self.__calories) == int or type(self.__calories) == float) and self.__calories < 200 else False
+        return True if (type(self.calories) == int or type(self.calories) == float) and self.calories < 200 else False
 
     def set_name(self, name):
-        if name is not None and type(name) == str: self.__name = name
+        if name is not None and type(name) == str: self.name = name
 
     def set_calories(self, calories):
-        if calories is not None and (type(calories) == int or type(calories) == float) and calories > 0: self.__calories = calories
+        if calories is not None and (type(calories) == int or type(calories) == float) and calories > 0: self.calories = calories
 
     def get_name(self):
-        return self.__name
+        return self.name
 
     def get_calories(self):
-        return self.__calories
+        return self.calories
 
     def __str__(self):
-        return "Dessert: {}, Calories: {}".format(self.__name, self.__calories)
+        return "Dessert: {}, Calories: {}".format(self.name, self.calories)
 
 icecream = Dessert("Icecream")
 assert icecream.is_delicious() == True
