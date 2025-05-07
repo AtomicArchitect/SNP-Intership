@@ -21,7 +21,8 @@ def rps_game_winner(players):
                 (player[1] != 'P' and
                 player[1] != 'R' and
                 player[1] != 'S')): raise NoSuchStrategyError("cheat player -> {}".format(player))
-    return players[check_winning_hand(players[0][1], players[1][1]) - 1]
+    winner_idx = check_winning_hand(players[0][1], players[1][1]) - 1
+    return " ".join(players[winner_idx])
 
 def check_winning_hand(first_player, second_player):
     if first_player == second_player: return 1
@@ -36,8 +37,8 @@ def check_winning_hand(first_player, second_player):
         elif second_player == 'P': return 1
     return 1
 
-print(rps_game_winner([['player1', 'S'], ['player2', 'P']]))
-print(rps_game_winner([['player1', 'R'], ['player2', 'P']]))
+print(rps_game_winner([['player1', 'P'], ['player2', 'S']],))
+print(rps_game_winner([['player1', 'P'], ['player2', 'P']],))
 print(rps_game_winner([['player1', 'S'], ['player2', 'R']]))
 print(rps_game_winner([['player1', 'R'], ['player2', 'R']]))
 # print(rps_game_winner([['player1', 'P'], ['player2', 'A']])) # NoSuchStrategyError: No such strategy
