@@ -28,7 +28,8 @@ def cached(_func = None, *, max_size = None, seconds = None):
                 if key in kwargs: result.append(kwargs[key])
                 else: result.append(None)
             for idx, arg in enumerate(args):
-                result[idx] = arg
+                if len(keys) == 0: result.append(arg)
+                else: result[idx] = arg
             return ''.join(map(str, result))
 
         @wraps(func)
@@ -49,27 +50,18 @@ def cached(_func = None, *, max_size = None, seconds = None):
     if _func is None: return decorator
     else: return decorator(_func)
 
-@cached(max_size=10, seconds=0)
-def slow_function(x, message = None):
-    print(f"Вычисляю для {x}... {message}")
-    return x ** 2
+@cached(max_size=10, seconds=10)
+def slow_function(*args, **kwargs):
+    print("Вычисляю для {} {}".format(args, kwargs))
+    return 5 ** 2
 
-@cached(max_size=2, seconds=20)
-def generator(x, message = None):
-    print(f"Генерирую для {x}... {message}")
-    return x, message
-
-print(generator(5, "good"))
-print(generator(5, "good"))
 print(slow_function(4))
 print(slow_function(4))
 print(slow_function(3, "hello"))
-print(generator(6, "hi"))
 print(slow_function(2, "hello"))
-print(slow_function(3, "hi"))
-print(generator(6))
-print(generator(6))
+print(slow_function("hello", 3))
 time.sleep(15)
 print(slow_function(2, "hello"))
-print(slow_function(3, "hi"))
-print(generator(6))
+print(slow_function("hello", 3))
+print(slow_function(3, "hello"))
+print(slow_function(4))
