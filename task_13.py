@@ -37,11 +37,12 @@ def cached(_func = None, *, max_size = None, seconds = None):
             if ((cache_size is not None and cache_size == 0)
                     or (lifetime is not None and lifetime == 0)):
                 return func(*args, **kwargs)
-            old_cleaner()
             args_assembled = args_assembly(*args, **kwargs)
             if args_assembled not in cache:
                 push_to_cache(args_assembled, func(*args, **kwargs))
-            return cache[args_assembled][1]
+            result = cache[args_assembled][1]
+            old_cleaner()
+            return result
         keys = getfullargspec(func).args
         lifetime = seconds if type(seconds) == int and seconds >= 0 else None
         cache_size = max_size if type(max_size) == int and max_size >= 0 else None
@@ -53,15 +54,12 @@ def cached(_func = None, *, max_size = None, seconds = None):
 @cached(max_size=10, seconds=10)
 def slow_function(*args, **kwargs):
     print("Вычисляю для {} {}".format(args, kwargs))
-    return 5 ** 2
+    return len(args)
 
-print(slow_function(4))
-print(slow_function(4))
-print(slow_function(3, "hello"))
-print(slow_function(2, "hello"))
-print(slow_function("hello", 3))
+print(slow_function(None))
+print(slow_function(None))
+print(slow_function(None))
 time.sleep(15)
-print(slow_function(2, "hello"))
-print(slow_function("hello", 3))
-print(slow_function(3, "hello"))
-print(slow_function(4))
+print("sleep end")
+print(slow_function(None))
+print(slow_function(None))
