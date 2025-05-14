@@ -8,7 +8,7 @@ def cached(_func = None, *, max_size = None, seconds = None):
             if lifetime is None: return
             current_timestamp = time.time()
             for key in list(cache.keys()):
-                if current_timestamp - cache[key][0] > lifetime:
+                if current_timestamp - cache[key][0] >= lifetime:
                     del cache[key]
 
         def push_to_cache(args_assembled, func_results):
@@ -34,32 +34,29 @@ def cached(_func = None, *, max_size = None, seconds = None):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if ((cache_size is not None and cache_size == 0)
-                    or (lifetime is not None and lifetime == 0)):
-                return func(*args, **kwargs)
+            old_cleaner()
             args_assembled = args_assembly(*args, **kwargs)
             if args_assembled not in cache:
                 push_to_cache(args_assembled, func(*args, **kwargs))
-            result = cache[args_assembled][1]
-            old_cleaner()
-            return result
+            return cache[args_assembled][1]
         keys = getfullargspec(func).args
-        lifetime = seconds if type(seconds) == int and seconds >= 0 else None
-        cache_size = max_size if type(max_size) == int and max_size >= 0 else None
+        lifetime = seconds if type(seconds) == int and seconds > 0 else None
+        cache_size = max_size if type(max_size) == int and max_size > 0 else None
         cache = {} # { <func_arguments>: (<timestamp>, <func_result>), ... }
         return wrapper
     if _func is None: return decorator
     else: return decorator(_func)
 
 @cached(max_size=10, seconds=10)
-def slow_function(*args, **kwargs):
-    print("Вычисляю для {} {}".format(args, kwargs))
-    return len(args)
+def slow_function(a = 1):
+    print("Вычисляю для {}".format(a))
+    return a ** 1/2
 
-print(slow_function(None))
-print(slow_function(None))
-print(slow_function(None))
+print(slow_function(5))
+print(slow_function(4))
+print(slow_function(4))
+print(slow_function(4))
 time.sleep(15)
 print("sleep end")
-print(slow_function(None))
-print(slow_function(None))
+print(slow_function(3))
+print(slow_function(4))
